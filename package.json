@@ -1,0 +1,96 @@
+{
+  "name": "opencompile",
+  "version": "0.1.0",
+  "description": "🔥 Revolutionary AI-Powered Backend Compiler - Detect ANY Framework, ANY Domain, WITHOUT Templates",
+  "keywords": [
+    "ai",
+    "code-generation",
+    "framework-detection",
+    "multi-agent",
+    "template-free",
+    "agentic-ai",
+    "backend-compiler",
+    "intent-driven-development"
+  ],
+  "homepage": "https://github.com/kolerr/opencompile",
+  "bugs": {
+    "url": "https://github.com/kolerr/opencompile/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Ricky Anh Nguyen",
+    "email": "ricky@kolerrlab.com",
+    "url": "https://github.com/kolerr"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kolerr/opencompile.git"
+  },
+  "bin": {
+    "opencompile": "./dist/cli/index.js",
+    "oc": "./dist/cli/index.js"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./core": "./dist/core/index.js",
+    "./agents": "./dist/agents/index.js",
+    "./sdk": "./dist/sdk/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli/index.ts",
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "start": "node dist/cli/index.js",
+    "opencompile": "tsx src/cli/index.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "openai": "^4.73.0",
+    "@google/generative-ai": "^0.21.0",
+    "commander": "^12.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.1.1",
+    "inquirer": "^12.0.0",
+    "zod": "^3.23.8",
+    "dotenv": "^16.4.7",
+    "execa": "^9.5.2",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-typescript": "^0.23.2",
+    "tree-sitter-python": "^0.23.6",
+    "tree-sitter-javascript": "^0.23.0",
+    "vectra": "^0.9.0",
+    "tslog": "^4.10.2",
+    "express": "^5.0.1",
+    "ws": "^8.18.0",
+    "chokidar": "^4.0.3",
+    "fast-glob": "^3.3.2",
+    "yaml": "^2.6.1",
+    "json5": "^2.2.3",
+    "ajv": "^8.18.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/express": "^5.0.0",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2",
+    "tsx": "^4.19.2",
+    "tsup": "^8.3.5",
+    "vitest": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
