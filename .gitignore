@@ -11,11 +11,16 @@ build/
 coverage/
 .nyc_output/
 
-# Environment
+# Environment Variables - SECURITY CRITICAL
+# Never commit API keys or secrets!
 .env
 .env.local
+.env.*.local
+.env.development
 .env.production
-*.local
+.env.test
+*.env
+!.env.example
 
 # Logs
 logs/

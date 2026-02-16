@@ -147,13 +147,40 @@ opencompile extend "Add GraphQL support"
 
 ### Configuration
 ```bash
-# Set up AI providers
-opencompile config set anthropic.api_key "your-key"
-opencompile config set openai.api_key "your-key"
+# Set up AI providers (use .env file for security)
+cp .env.example .env
+# Edit .env and add your API key
 
-# Choose preferred model
-opencompile config set ai.model "claude-3-7-sonnet-20250219"
+# Or use config command
+opencompile config set openai.api_key "your-key"
+opencompile config set anthropic.api_key "your-key"
+
+# Choose preferred model (default: gpt-4o)
+opencompile config set ai.model "gpt-4o"
 ```
+
+### 🔐 **Security Best Practices**
+
+**⚠️ NEVER commit your `.env` file with real API keys!**
+
+```bash
+# ✅ SAFE - Use .env file (already in .gitignore)
+cp .env.example .env
+echo "OPENAI_API_KEY=sk-your-real-key-here" >> .env
+
+# ❌ UNSAFE - Don't hardcode keys in code
+const apiKey = "sk-your-key";  // NEVER DO THIS!
+
+# ✅ Verify before committing
+git status  # Make sure .env is NOT listed
+```
+
+**What's Protected:**
+- ✅ `.env` is in `.gitignore` (never committed)
+- ✅ `.env.example` is committed (safe template)
+- ✅ Local `knowledge-base/` excluded (may contain project data)
+
+**See [SECURITY.md](SECURITY.md) for complete security guidelines.**
 
 ---
 
