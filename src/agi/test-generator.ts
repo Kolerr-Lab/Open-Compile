@@ -129,7 +129,7 @@ Return complete integration test files.`;
   /**
    * Generate E2E tests
    */
-  private async generateE2ETests(code: string, framework: string): Promise<TestFile[]> {
+  private async generateE2ETests(code: string, _framework: string): Promise<TestFile[]> {
     this.logger.info('  📝 Generating E2E tests...');
 
     const prompt = `Generate end-to-end tests for this application:

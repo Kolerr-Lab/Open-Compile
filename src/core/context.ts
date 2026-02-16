@@ -4,7 +4,7 @@
  * Manages project context, file operations, and state
  */
 
-import { readdir, readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join, dirname } from 'path';
 import { existsSync } from 'fs';
 import fg from 'fast-glob';

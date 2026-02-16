@@ -62,7 +62,7 @@ export class CICDGenerator {
   /**
    * Extract configuration from code
    */
-  private extractConfig(code: string, framework: string): CICDPipeline['config'] {
+  private extractConfig(_code: string, framework: string): CICDPipeline['config'] {
     return {
       branches: ['main', 'develop', 'staging'],
       environments: ['development', 'staging', 'production'],

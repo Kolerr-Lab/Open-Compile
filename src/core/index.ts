@@ -10,4 +10,3 @@ export { SelfLearningEngine } from './self-learning.js';
 export { FrameworkDetector } from './detector.js';
 export { DomainClassifier } from './domain.js';
 export { ContextManager } from './context.js';
-export { CodeSynthesizer } from './synthesizer.js';

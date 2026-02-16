@@ -11,11 +11,8 @@ import { existsSync, mkdirSync } from 'fs';
 
 export class SelfLearningEngine {
   private vectorIndex: LocalIndex;
-  private knowledgeBasePath: string;
 
   constructor(knowledgeBasePath = './knowledge-base') {
-    this.knowledgeBasePath = knowledgeBasePath;
-
     // Create knowledge base directory
     if (!existsSync(knowledgeBasePath)) {
       mkdirSync(knowledgeBasePath, { recursive: true });
@@ -161,7 +158,7 @@ export class SelfLearningEngine {
       patterns.fileStructure = Object.keys(code.files);
       
       // Detect common patterns in code
-      for (const [path, content] of Object.entries<string>(code.files)) {
+      for (const [_path, content] of Object.entries<string>(code.files)) {
         if (content.includes('class ')) {
           patterns.commonPatterns.push('class-based');
         }
@@ -199,7 +196,7 @@ export class SelfLearningEngine {
   /**
    * Update framework-specific knowledge
    */
-  private async updateFrameworkKnowledge(framework: string, architecture: any): Promise<void> {
+  private async updateFrameworkKnowledge(_framework: string, _architecture: any): Promise<void> {
     // In production: Update framework-specific patterns, best practices, etc.
     // This enables the system to learn framework-specific conventions
   }
@@ -207,7 +204,7 @@ export class SelfLearningEngine {
   /**
    * Update domain-specific knowledge
    */
-  private async updateDomainKnowledge(domain: string, description: string): Promise<void> {
+  private async updateDomainKnowledge(_domain: string, _description: string): Promise<void> {
     // In production: Update domain-specific patterns, common requirements, etc.
     // This enables better understanding of industry-specific needs
   }

@@ -24,16 +24,6 @@ export class AgentOrchestrator {
   private logger: Logger;
   private model: string;
 
-  // Agent specializations
-  private agents = {
-    intent: this.createIntentAgent.bind(this),
-framework: this.createFrameworkAgent.bind(this),
-    architecture: this.createArchitectureAgent.bind(this),
-    code: this.createCodeAgent.bind(this),
-    security: this.createSecurityAgent.bind(this),
-    performance: this.createPerformanceAgent.bind(this),
-  };
-
   constructor(config: OrchestratorConfig) {
     this.logger = config.logger;
     this.model = config.model;
@@ -254,7 +244,7 @@ Respond in JSON format.`;
   /**
    * Extract business logic from codebase (for translation)
    */
-  async extractBusinessLogic(context: any): Promise<any> {
+  async extractBusinessLogic(_context: any): Promise<any> {
     this.logger.info('🧠 Business Logic Extraction Agent activated');
 
     const prompt = `Extract the framework-agnostic business logic from this codebase.
@@ -374,30 +364,5 @@ Respond with complete ${context.to} architecture in JSON format.`;
     }
 
     return '// Generated code placeholder';
-  }
-
-  // Agent creation methods
-  private createIntentAgent() {
-    return { name: 'Intent Analysis Agent', role: 'understanding user requirements' };
-  }
-
-  private createFrameworkAgent() {
-    return { name: 'Framework Selection Agent', role: 'choosing optimal tech stack' };
-  }
-
-  private createArchitectureAgent() {
-    return { name: 'Architecture Design Agent', role: 'designing system structure' };
-  }
-
-  private createCodeAgent() {
-    return { name: 'Code Synthesis Agent', role: 'generating production code' };
-  }
-
-  private createSecurityAgent() {
-    return { name: 'Security Analysis Agent', role: 'identifying vulnerabilities' };
-  }
-
-  private createPerformanceAgent() {
-    return { name: 'Performance Optimization Agent', role: 'optimizing code performance' };
   }
 }

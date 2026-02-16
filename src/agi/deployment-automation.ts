@@ -17,7 +17,7 @@ interface DeploymentConfig {
     service: string;
     ingress: string;
   };
-  ci cd: {
+  cicd?: {
     githubActions?: string;
     gitlab?: string;
     jenkins?: string;
@@ -45,7 +45,7 @@ export class DeploymentAutomation {
    * Generate complete deployment configuration
    */
   async generateDeployment(
-    code: string,
+    _code: string,
     framework: string,
     platform: DeploymentConfig['platform']
   ): Promise<DeploymentConfig> {

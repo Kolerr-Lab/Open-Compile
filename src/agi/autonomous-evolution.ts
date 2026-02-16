@@ -62,7 +62,7 @@ export class AutonomousCodeEvolution {
 
       // Evaluate all variations
       const evaluated = await Promise.all(
-        variations.map(async (code, idx) => ({
+        variations.map(async (code, _idx) => ({
           code,
           fitness: await this.calculateFitness(code, targetMetrics),
           generation: gen,

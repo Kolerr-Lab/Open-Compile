@@ -9,9 +9,16 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { createSpinner } from 'ora';
+import ora from 'ora';
 import { OpenCompileEngine } from '../core/engine.js';
-import { version } from '../../package.json';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+const version = packageJson.version;
 
 const program = new Command();
 
@@ -47,7 +54,7 @@ program
     console.log(banner);
     console.log(chalk.bold.green('🚀 Starting OpenCompile Intelligence Engine...\n'));
 
-    const spinner = createSpinner({
+    const spinner = ora({
       text: 'Initializing multi-agent system...',
       color: 'cyan'
     }).start();
@@ -95,7 +102,7 @@ program
     console.log(banner);
     console.log(chalk.bold.green('🔍 Analyzing project...\n'));
 
-    const spinner = createSpinner({
+    const spinner = ora({
       text: 'Scanning codebase...',
       color: 'cyan'
     }).start();
@@ -138,7 +145,7 @@ program
     console.log(banner);
     console.log(chalk.bold.green('⚡ Extending project...\n'));
 
-    const spinner = createSpinner({
+    const spinner = ora({
       text: 'Analyzing existing codebase...',
       color: 'cyan'
     }).start();
@@ -168,15 +175,15 @@ program
 program
   .command('translate')
   .description('Translate project from one framework to another')
-  .option('--from <framework>', 'Source framework', { required: true })
-  .option('--to <framework>', 'Target framework', { required: true })
+  .requiredOption('--from <framework>', 'Source framework')
+  .requiredOption('--to <framework>', 'Target framework')
   .option('--source <path>', 'Source project path', '.')
   .option('--output <path>', 'Output path')
   .action(async (options) => {
     console.log(banner);
     console.log(chalk.bold.green(`🔄 Translating from ${options.from} to ${options.to}...\n`));
 
-    const spinner = createSpinner({
+    const spinner = ora({
       text: 'Analyzing source framework...',
       color: 'cyan'
     }).start();

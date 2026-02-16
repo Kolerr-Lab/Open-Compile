@@ -40,6 +40,7 @@
   },
   "scripts": {
     "dev": "tsx src/cli/index.ts",
+    "dev:server": "tsx src/server.ts",
     "build": "tsup",
     "build:watch": "tsup --watch",
     "type-check": "tsc --noEmit",
@@ -48,6 +49,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "start": "node dist/cli/index.js",
+    "start:server": "node dist/server.js",
     "opencompile": "tsx src/cli/index.ts"
   },
   "dependencies": {
@@ -69,16 +71,18 @@
     "vectra": "^0.9.0",
     "tslog": "^4.10.2",
     "express": "^5.0.1",
+    "cors": "^2.8.5",
     "ws": "^8.18.0",
     "chokidar": "^4.0.3",
     "fast-glob": "^3.3.2",
     "yaml": "^2.6.1",
     "json5": "^2.2.3",
-    "ajv": "^8.18.2"
+    "ajv": "^8.18.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
     "@types/ws": "^8.5.13",
     "typescript": "^5.7.2",
     "tsx": "^4.19.2",

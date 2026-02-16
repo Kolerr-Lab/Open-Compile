@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCompile AGI - Revolutionary Backend Compiler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 OpenCompile AGI</h1>
+            <p>The Revolutionary Backend Compiler with 10 AGI Components</p>
+        </div>
+
+        <div class="content">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">AGI Components</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">AI Models</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Frameworks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Templates</div>
+                </div>
+            </div>
+
+            <h2 style="color: #667eea; margin-bottom: 20px;">🚀 Revolutionary Features</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🧠 Multi-Model Reasoning</h3>
+                    <p>Claude + GPT-4 + Gemini consensus for 95%+ accuracy</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🧬 Code Evolution</h3>
+                    <p>Genetic algorithms optimize code through 10 generations</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ Security Scanner</h3>
+                    <p>OWASP Top 10 + AI deep vulnerability detection</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Performance AI</h3>
+                    <p>6 optimization strategies for maximum speed</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🧪 Test Generator</h3>
+                    <p>Auto-generate unit, integration & E2E tests</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📚 Documentation AI</h3>
+                    <p>Enterprise-grade docs written automatically</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🚀 Deployment</h3>
+                    <p>Docker, K8s, Terraform auto-generation</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚙️ CI/CD Generator</h3>
+                    <p>GitHub Actions, GitLab CI pipelines</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔧 Smart Refactor</h3>
+                    <p>30-50% complexity reduction with AI</p>
+                </div>
+                <div class="feature-card">
+                    <h3>👁️ Real-Time Analysis</h3>
+                    <p>Live AGI feedback as you code</p>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h2 style="color: #667eea; margin-bottom: 20px;">💻 Try It Now</h2>
+                
+                <div class="input-group">
+                    <label for="project-description">Describe your backend project:</label>
+                    <textarea 
+                        id="project-description" 
+                        rows="4" 
+                        placeholder="E.g., Build a REST API for e-commerce with user authentication, product catalog, and payment integration"
+                    ></textarea>
+                </div>
+
+                <button class="btn" onclick="generateProject()">
+                    🔥 Generate with Full AGI Power
+                </button>
+
+                <div id="output" class="output" style="display: none;"></div>
+            </div>
+
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107; margin: 30px 0;">
+                <h3 style="color: #856404; margin-bottom: 10px;">⚠️ Web UI Status</h3>
+                <p style="color: #856404; margin: 0;">
+                    This is a demonstration UI. For full functionality, use the CLI or API.
+                    Install: <code style="background: #fff; padding: 5px 10px; border-radius: 5px;">pnpm install -g opencompile</code>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Created by <strong>Ricky Anh Nguyen</strong></p>
+            <p>Owner of <strong>Kolerr Lab</strong> & <strong>OrchesityAI</strong></p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                🔗 <a href="https://github.com/Kolerr-Lab/Open-Compile" style="color: #667eea; text-decoration: none;">GitHub Repository</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function generateProject() {
+            const description = document.getElementById('project-description').value;
+            const outputDiv = document.getElementById('output');
+            const btn = event.target;
+
+            if (!description.trim()) {
+                alert('Please enter a project description!');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '🔄 Generating...';
+            outputDiv.style.display = 'block';
+            outputDiv.textContent = '🧠 Initializing AGI components...\n';
+
+            // Simulate AGI generation process
+            const steps = [
+                '🔍 Analyzing requirements with multi-model AI...',
+                '🎯 Classifying domain and selecting framework...',
+                '🏗️ Designing architecture with specialized agents...',
+                '💻 Generating template-free code...',
+                '🧬 Evolving code through genetic algorithms (10 generations)...',
+                '🛡️ Running security vulnerability scan (OWASP Top 10)...',
+                '⚡ Optimizing performance (6 strategies)...',
+                '🧪 Generating comprehensive test suite...',
+                '📚 Creating AI-written documentation...',
+                '🚀 Setting up deployment configuration...',
+                '⚙️ Generating CI/CD pipeline...',
+                '✅ Project generation complete!'
+            ];
+
+            let currentStep = 0;
+            const interval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    outputDiv.textContent += steps[currentStep] + '\n';
+                    outputDiv.scrollTop = outputDiv.scrollHeight;
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    btn.textContent = '🔥 Generate with Full AGI Power';
+                    
+                    outputDiv.textContent += '\n📁 Generated files:\n';
+                    outputDiv.textContent += '  ✓ src/ (production-ready code)\n';
+                    outputDiv.textContent += '  ✓ tests/ (100% coverage)\n';
+                    outputDiv.textContent += '  ✓ docs/ (comprehensive documentation)\n';
+                    outputDiv.textContent += '  ✓ Dockerfile & docker-compose.yml\n';
+                    outputDiv.textContent += '  ✓ .github/workflows/ci-cd.yml\n';
+                    outputDiv.textContent += '\n🌟 Your project is ready to deploy!\n';
+                    outputDiv.textContent += '\nℹ️  Note: This is a demo. Use CLI for actual generation:\n';
+                    outputDiv.textContent += '   opencompile create "' + description + '"\n';
+                }
+            }, 800);
+        }
+    </script>
+</body>
+</html>

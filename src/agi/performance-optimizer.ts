@@ -5,7 +5,7 @@
  * Uses profiling, benchmarking, and AGI-powered optimization
  */
 
-import { AGIReasoningEngine } from './multi-model-reasoning.ts';
+import { AGIReasoningEngine } from './multi-model-reasoning.js';
 import type { Logger } from '../utils/logger.js';
 
 interface PerformanceMetrics {
@@ -82,7 +82,7 @@ export class PerformanceOptimizer {
   private async applyOptimizations(
     code: string,
     metrics: PerformanceMetrics,
-    framework?: string
+    _framework?: string
   ): Promise<{ code: string; techniques: string[] }> {
     const techniques: string[] = [];
     let optimizedCode = code;
@@ -95,7 +95,7 @@ export class PerformanceOptimizer {
     }
 
     // 2. Database query optimization
-    if (this.hasDatabase Code(code)) {
+    if (this.hasDatabaseCode(code)) {
       this.logger.info('🔧 Optimizing database queries...');
       optimizedCode = await this.optimizeDatabaseQueries(optimizedCode);
       techniques.push('Database query optimization');
