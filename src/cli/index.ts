@@ -48,7 +48,7 @@ program
   .description('Create a new project from natural language description')
   .argument('<description>', 'Natural language description of what you want to build')
   .option('-o, --output <path>', 'Output directory', './generated-project')
-  .option('--model <model>', 'AI model to use', 'claude-3-7-sonnet-20250219')
+  .option('--model <model>', 'AI model to use', 'gpt-4o')
   .option('--framework <framework>', 'Preferred framework (optional)')
   .action(async (description: string, options) => {
     console.log(banner);
@@ -221,9 +221,9 @@ program
     
     if (action === 'list') {
       console.log(chalk.white('Current configuration:'));
-      console.log(chalk.gray('  anthropic.api_key: ********'));
       console.log(chalk.gray('  openai.api_key: ********'));
-      console.log(chalk.gray('  ai.model: claude-3-7-sonnet-20250219'));
+      console.log(chalk.gray('  anthropic.api_key: ********'));
+      console.log(chalk.gray('  ai.model: gpt-4o (default)'));
     } else if (action === 'set' && key && value) {
       console.log(chalk.green(`✅ Set ${key} = ${value.includes('key') ? '********' : value}`));
     } else if (action === 'get' && key) {

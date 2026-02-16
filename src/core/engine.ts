@@ -23,7 +23,7 @@ export class OpenCompileEngine {
 
   constructor(config: Partial<EngineConfig> = {}) {
     this.config = {
-      model: config.model || 'claude-3-7-sonnet-20250219',
+      model: config.model || 'gpt-4o',
       outputPath: config.outputPath || './generated-project',
       enableLearning: config.enableLearning ?? true,
       verbose: config.verbose ?? false,

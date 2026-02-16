@@ -35,7 +35,7 @@ export class AGIReasoningEngine {
   // Model configurations
   private models = {
     claude: 'claude-3-7-sonnet-20250219',
-    gpt: 'gpt-4-turbo-preview',
+    gpt: 'gpt-4o',
     gemini: 'gemini-2.0-flash-exp',
   };
 
