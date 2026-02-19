@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/branding/logo.jpg" alt="OpenCompile - The Cyber Horse" width="200" />
+<img src="assets/branding/logo.png" alt="OpenCompile - The Cyber Horse" width="200" />
 
 ```
  ██████╗ ██████╗ ███████╗███╗   ██╗ ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗██╗     ███████╗
