@@ -64,7 +64,9 @@ Analyze this request and extract:
 4. Scale and performance needs
 5. Domain/industry context
 
-Respond in JSON format:
+IMPORTANT: Respond with ONLY valid JSON, no explanations, no markdown, no code fences. Just the raw JSON object.
+
+JSON format:
 {
   "functionality": "...",
   "features": ["...", "..."],
@@ -74,7 +76,7 @@ Respond in JSON format:
 }`;
 
     const response = await this.callLLM(prompt);
-    const intent = JSON.parse(response);
+    const intent = this.extractJSON(response);
 
     this.logger.success('✅ Intent analyzed');
     return intent;
@@ -138,7 +140,7 @@ Design the optimal architecture. Include:
 Respond in JSON format with complete architectural design.`;
 
     const response = await this.callLLM(prompt);
-    const architecture = JSON.parse(response);
+    const architecture = this.extractJSON(response);
 
     this.logger.success('✅ Architecture designed');
     return architecture;
@@ -215,7 +217,7 @@ Plan how to integrate this feature:
 
 Respond in JSON format.`;
 
-    const plan = JSON.parse(await this.callLLM(prompt));
+    const plan = this.extractJSON(await this.callLLM(prompt));
 
     this.logger.success('✅ Extension planned');
     return plan;
@@ -259,7 +261,7 @@ Ignore framework-specific code.
 
 Respond in structured JSON format.`;
 
-    const logic = JSON.parse(await this.callLLM(prompt));
+    const logic = this.extractJSON(await this.callLLM(prompt));
 
     this.logger.success('✅ Business logic extracted');
     return logic;
@@ -288,7 +290,7 @@ Design the equivalent architecture in ${context.to}:
 
 Respond with complete ${context.to} architecture in JSON format.`;
 
-    const architecture = JSON.parse(await this.callLLM(prompt));
+    const architecture = this.extractJSON(await this.callLLM(prompt));
 
     this.logger.success('✅ Architecture mapped');
     return architecture;
@@ -364,5 +366,42 @@ Respond with complete ${context.to} architecture in JSON format.`;
     }
 
     return '// Generated code placeholder';
+  }
+
+  /**
+   * Extract JSON from LLM response that might have markdown fences or comments
+   */
+  private extractJSON(response: string): any {
+    // Log the raw response for debugging
+    if (!response || response.trim().length === 0) {
+      this.logger.error('Empty response from LLM');
+      throw new Error('Empty response from AI model');
+    }
+
+    // Remove markdown code fences
+    let cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+
+    // Try to find JSON object or array
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+    if (jsonMatch) {
+      cleaned = jsonMatch[0];
+    }
+
+    // Remove single-line comments
+    cleaned = cleaned.replace(/\/\/.*$/gm, '');
+
+    // Remove multi-line comments
+    cleaned = cleaned.replace(/\/\*[\s\S]*?\*\//g, '');
+
+    // Trim whitespace
+    cleaned = cleaned.trim();
+
+    try {
+      return JSON.parse(cleaned);
+    } catch (error) {
+      this.logger.error(`Failed to parse JSON from response: ${cleaned.substring(0, 200)}...`);
+      this.logger.error(`Original response: ${response.substring(0, 200)}...`);
+      throw new Error(`Invalid JSON response from AI: ${error}`);
+    }
   }
 }

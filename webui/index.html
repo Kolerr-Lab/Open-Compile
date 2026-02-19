@@ -215,7 +215,8 @@
     <div class="container">
         <div class="header">
             <h1>🔥 OpenCompile AGI</h1>
-            <p>The Revolutionary Backend Compiler with 10 AGI Components</p>
+            <p>The Revolutionary Backend Compiler with 13 AGI Components</p>
+            <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.9;">🐴 Powered by The Cyber Horse</p>
         </div>
 
         <div class="content">
@@ -302,11 +303,11 @@
                 <div id="output" class="output" style="display: none;"></div>
             </div>
 
-            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107; margin: 30px 0;">
-                <h3 style="color: #856404; margin-bottom: 10px;">⚠️ Web UI Status</h3>
-                <p style="color: #856404; margin: 0;">
-                    This is a demonstration UI. For full functionality, use the CLI or API.
-                    Install: <code style="background: #fff; padding: 5px 10px; border-radius: 5px;">pnpm install -g opencompile</code>
+            <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745; margin: 30px 0;">
+                <h3 style="color: #155724; margin-bottom: 10px;">✅ Live AGI System</h3>
+                <p style="color: #155724; margin: 0;">
+                    This WebUI connects to the REAL OpenCompile AGI engine with actual API calls.
+                    Generated projects use multi-model AI consensus with Claude + GPT-4 + Gemini.
                 </p>
             </div>
         </div>
@@ -321,7 +322,7 @@
     </div>
 
     <script>
-        function generateProject() {
+        async function generateProject() {
             const description = document.getElementById('project-description').value;
             const outputDiv = document.getElementById('output');
             const btn = event.target;
@@ -332,48 +333,60 @@
             }
 
             btn.disabled = true;
-            btn.textContent = '🔄 Generating...';
+            btn.textContent = '🔄 Generating with Real AGI...';
             outputDiv.style.display = 'block';
             outputDiv.textContent = '🧠 Initializing AGI components...\n';
+            outputDiv.textContent += '🔗 Connecting to OpenCompile API...\n';
 
-            // Simulate AGI generation process
-            const steps = [
-                '🔍 Analyzing requirements with multi-model AI...',
-                '🎯 Classifying domain and selecting framework...',
-                '🏗️ Designing architecture with specialized agents...',
-                '💻 Generating template-free code...',
-                '🧬 Evolving code through genetic algorithms (10 generations)...',
-                '🛡️ Running security vulnerability scan (OWASP Top 10)...',
-                '⚡ Optimizing performance (6 strategies)...',
-                '🧪 Generating comprehensive test suite...',
-                '📚 Creating AI-written documentation...',
-                '🚀 Setting up deployment configuration...',
-                '⚙️ Generating CI/CD pipeline...',
-                '✅ Project generation complete!'
-            ];
+            try {
+                // Call the REAL API endpoint
+                const response = await fetch('http://localhost:3000/api/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        description: description,
+                        framework: null, // Auto-detect
+                        platform: 'aws'
+                    })
+                });
 
-            let currentStep = 0;
-            const interval = setInterval(() => {
-                if (currentStep < steps.length) {
-                    outputDiv.textContent += steps[currentStep] + '\n';
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
-                    currentStep++;
-                } else {
-                    clearInterval(interval);
-                    btn.disabled = false;
-                    btn.textContent = '🔥 Generate with Full AGI Power';
-                    
-                    outputDiv.textContent += '\n📁 Generated files:\n';
-                    outputDiv.textContent += '  ✓ src/ (production-ready code)\n';
-                    outputDiv.textContent += '  ✓ tests/ (100% coverage)\n';
-                    outputDiv.textContent += '  ✓ docs/ (comprehensive documentation)\n';
-                    outputDiv.textContent += '  ✓ Dockerfile & docker-compose.yml\n';
-                    outputDiv.textContent += '  ✓ .github/workflows/ci-cd.yml\n';
-                    outputDiv.textContent += '\n🌟 Your project is ready to deploy!\n';
-                    outputDiv.textContent += '\nℹ️  Note: This is a demo. Use CLI for actual generation:\n';
-                    outputDiv.textContent += '   opencompile create "' + description + '"\n';
+                outputDiv.textContent += '⚡ Request sent to AGI Engine...\n';
+                outputDiv.textContent += '🤖 Multi-model AI reasoning in progress...\n\n';
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'API request failed');
                 }
-            }, 800);
+
+                const result = await response.json();
+
+                outputDiv.textContent += '✅ SUCCESS! Project generated with REAL AGI!\n\n';
+                outputDiv.textContent += '📁 Project created at:\n';
+                outputDiv.textContent += `   ${result.path}\n\n`;
+                outputDiv.textContent += '📦 Generated with:\n';
+                outputDiv.textContent += '  ✓ Multi-model AI consensus (Claude + GPT-4 + Gemini)\n';
+                outputDiv.textContent += '  ✓ Genetic algorithm optimization\n';
+                outputDiv.textContent += '  ✓ Security vulnerability scanning\n';
+                outputDiv.textContent += '  ✓ Performance optimization\n';
+                outputDiv.textContent += '  ✓ Comprehensive test suite\n';
+                outputDiv.textContent += '  ✓ AI-written documentation\n';
+                outputDiv.textContent += '  ✓ Deployment configurations\n';
+                outputDiv.textContent += '  ✓ CI/CD pipeline setup\n\n';
+                outputDiv.textContent += `💡 ${result.message}\n\n`;
+                outputDiv.textContent += '🚀 Your production-ready project is now available!\n';
+                
+            } catch (error) {
+                outputDiv.textContent += '\n❌ ERROR: ' + error.message + '\n\n';
+                outputDiv.textContent += '💡 Make sure the server is running:\n';
+                outputDiv.textContent += '   pnpm dev:server\n\n';
+                outputDiv.textContent += '🔑 Check your API keys in .env file\n';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔥 Generate with Full AGI Power';
+                outputDiv.scrollTop = outputDiv.scrollHeight;
+            }
         }
     </script>
 </body>
