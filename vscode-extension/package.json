@@ -1,0 +1,190 @@
+{
+  "name": "opencompile-vscode",
+  "displayName": "OpenCompile",
+  "description": "AI-powered backend development with real-time code generation and analysis",
+  "version": "0.1.0",
+  "publisher": "kolerr-lab",
+  "icon": "assets/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Snippets"
+  ],
+  "keywords": [
+    "ai",
+    "backend",
+    "code-generation",
+    "opencompile",
+    "intelligent-coding"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "opencompile.create",
+        "title": "OpenCompile: Create Project from Description"
+      },
+      {
+        "command": "opencompile.detect",
+        "title": "OpenCompile: Detect Framework"
+      },
+      {
+        "command": "opencompile.analyze",
+        "title": "OpenCompile: Analyze Current File"
+      },
+      {
+        "command": "opencompile.translate",
+        "title": "OpenCompile: Translate Framework"
+      },
+      {
+        "command": "opencompile.optimizeSelection",
+        "title": "OpenCompile: Optimize Selected Code"
+      },
+      {
+        "command": "opencompile.generateTests",
+        "title": "OpenCompile: Generate Tests"
+      },
+      {
+        "command": "opencompile.explainCode",
+        "title": "OpenCompile: Explain Selected Code"
+      },
+      {
+        "command": "opencompile.chat",
+        "title": "OpenCompile: Open AI Chat"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "opencompile",
+          "title": "OpenCompile",
+          "icon": "assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "opencompile": [
+        {
+          "id": "opencompile.projectView",
+          "name": "Project Analysis"
+        },
+        {
+          "id": "opencompile.suggestions",
+          "name": "AI Suggestions"
+        },
+        {
+          "id": "opencompile.chat",
+          "name": "AI Chat"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "OpenCompile",
+      "properties": {
+        "opencompile.apiKey.openai": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API Key",
+          "scope": "machine-overridable"
+        },
+        "opencompile.apiKey.anthropic": {
+          "type": "string",
+          "default": "",
+          "description": "Anthropic API Key",
+          "scope": "machine-overridable"
+        },
+        "opencompile.model": {
+          "type": "string",
+          "default": "gpt-4o",
+          "enum": ["gpt-4o", "gpt-4-turbo", "claude-3-7-sonnet-20250219", "gemini-2.0-flash-exp"],
+          "description": "Default AI model to use"
+        },
+        "opencompile.enableRealtime": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable real-time code analysis (may impact performance)"
+        },
+        "opencompile.autoOptimize": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically suggest optimizations while typing"
+        },
+        "opencompile.verbose": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable verbose logging"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "opencompile.create",
+        "key": "ctrl+shift+o c",
+        "mac": "cmd+shift+o c"
+      },
+      {
+        "command": "opencompile.analyze",
+        "key": "ctrl+shift+o a",
+        "mac": "cmd+shift+o a"
+      },
+      {
+        "command": "opencompile.chat",
+        "key": "ctrl+shift+o h",
+        "mac": "cmd+shift+o h"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "opencompile.optimizeSelection",
+          "when": "editorHasSelection",
+          "group": "opencompile@1"
+        },
+        {
+          "command": "opencompile.explainCode",
+          "when": "editorHasSelection",
+          "group": "opencompile@2"
+        },
+        {
+          "command": "opencompile.generateTests",
+          "group": "opencompile@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "opencompile.detect",
+          "group": "opencompile@1"
+        },
+        {
+          "command": "opencompile.translate",
+          "group": "opencompile@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0",
+    "typescript": "^5.3.3",
+    "tsup": "^8.0.1"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.1",
+    "openai": "^4.76.0",
+    "@google/generative-ai": "^0.21.0"
+  }
+}

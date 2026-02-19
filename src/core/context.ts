@@ -131,4 +131,22 @@ export class ContextManager {
       await writeFile(fullPath, content, 'utf-8');
     }
   }
+
+  /**
+   * Read a single file
+   */
+  async readFile(filePath: string): Promise<string> {
+    return await readFile(filePath, 'utf-8');
+  }
+
+  /**
+   * Write a single file
+   */
+  async writeFile(filePath: string, content: string): Promise<void> {
+    const dir = dirname(filePath);
+    if (!existsSync(dir)) {
+      await mkdir(dir, { recursive: true });
+    }
+    await writeFile(filePath, content, 'utf-8');
+  }
 }

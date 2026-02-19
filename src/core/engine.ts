@@ -232,4 +232,43 @@ await this.learningEngine.learnFromProject(projectPath, metadata);
     
     this.logger.success('✅ Translation complete!');
   }
+
+  /**
+   * NEW: Translate framework using AI-powered translator
+   */
+  async translateFramework(
+    fromFramework: string,
+    toFramework: string,
+    sourcePath: string,
+    outputPath?: string
+  ): Promise<void> {
+    this.logger.info(`🔄 Framework Translation: ${fromFramework} → ${toFramework}`);
+
+    const { FrameworkTranslator } = await import('../agi/framework-translator.js');
+    const translator = new FrameworkTranslator(this.logger);
+
+    // Read source code
+    const sourceCode = await this.contextManager.readFile(sourcePath);
+
+    // Translate
+    const result = await translator.translate({
+      sourceFramework: fromFramework,
+      targetFramework: toFramework,
+      sourceLanguage: 'auto',
+      targetLanguage: 'auto',
+      sourceCode,
+      preserveStructure: true,
+    });
+
+    // Write output
+    const output = outputPath || `${sourcePath}.${toFramework}`;
+    await this.contextManager.writeFile(output, result.code);
+
+    this.logger.success(`✅ Translated to ${toFramework}: ${output}`);
+
+    if (result.warnings.length > 0) {
+      this.logger.warn('⚠️ Warnings:');
+      result.warnings.forEach(w => this.logger.warn(`  - ${w}`));
+    }
+  }
 }
