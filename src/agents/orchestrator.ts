@@ -419,15 +419,31 @@ Respond with complete ${context.to} architecture in JSON format.`;
     // Remove multi-line comments
     cleaned = cleaned.replace(/\/\*[\s\S]*?\*\//g, '');
 
+    // Remove bad control characters (tab, newline, carriage return inside strings are OK,
+    // but raw 0x00-0x1F other than \t \n \r cause JSON.parse to fail)
+    cleaned = cleaned.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+
     // Trim whitespace
     cleaned = cleaned.trim();
 
     try {
       return JSON.parse(cleaned);
     } catch (error) {
-      this.logger.error(`Failed to parse JSON from response: ${cleaned.substring(0, 200)}...`);
-      this.logger.error(`Original response: ${response.substring(0, 200)}...`);
-      throw new Error(`Invalid JSON response from AI: ${error}`);
+      // Last resort: try to sanitize string values by escaping unescaped control chars
+      try {
+        const sanitized = cleaned.replace(
+          /"((?:[^"\\]|\\.)*)"/g,
+          (_match, inner) => `"${inner.replace(/[\x00-\x1F\x7F]/g, (c: string) => {
+            const escapes: Record<string, string> = { '\n': '\\n', '\r': '\\r', '\t': '\\t' };
+            return escapes[c] ?? '';
+          })}"`
+        );
+        return JSON.parse(sanitized);
+      } catch {
+        this.logger.error(`Failed to parse JSON from response: ${cleaned.substring(0, 200)}...`);
+        this.logger.error(`Original response: ${response.substring(0, 200)}...`);
+        throw new Error(`Invalid JSON response from AI: ${error}`);
+      }
     }
   }
 }
