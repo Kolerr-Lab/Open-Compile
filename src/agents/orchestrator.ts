@@ -128,16 +128,21 @@ ${JSON.stringify(context.intent, null, 2)}
 Domain: ${context.domain.name}
 Framework: ${context.framework}
 
-Design the optimal architecture. Include:
-1. Project structure (files and folders)
-2. Core components and their responsibilities
-3. Database schema (if needed)
-4. API endpoints/routes
-5. Authentication & authorization approach
-6. Testing strategy
-7. Dependencies needed
+Design the optimal architecture.
 
-Respond in JSON format with complete architectural design.`;
+IMPORTANT: Respond with ONLY valid JSON (no markdown, no fences) in EXACTLY this format:
+{
+  "framework": "${context.framework}",
+  "files": [
+    { "path": "src/main.py", "purpose": "Application entry point" },
+    { "path": "src/module.py", "purpose": "Core business logic" }
+  ],
+  "dependencies": { "package-name": "version" },
+  "configuration": {}
+}
+
+The "files" array MUST contain the actual file paths that need to be created (relative paths).
+Include all necessary files for a production-ready project.`;
 
     const response = await this.callLLM(prompt);
     const architecture = this.extractJSON(response);
@@ -155,15 +160,34 @@ Respond in JSON format with complete architectural design.`;
 
     const files: Record<string, string> = {};
 
+    // Normalize files array - handle different LLM response shapes
+    let fileList: Array<{ path: string; purpose: string }> = [];
+    if (Array.isArray(architecture.files)) {
+      fileList = architecture.files.map((f: any) => ({
+        path: f.path || f.name || f.filename || String(f),
+        purpose: f.purpose || f.description || f.content || 'Implementation',
+      })).filter((f) => f.path && f.path.length > 0);
+    }
+
+    if (fileList.length === 0) {
+      this.logger.error('No files in architecture - using fallback structure');
+      // Fallback: generate a sensible default structure
+      fileList = [
+        { path: 'main.py', purpose: 'Main application entry point' },
+        { path: 'requirements.txt', purpose: 'Python dependencies' },
+        { path: 'README.md', purpose: 'Project documentation' },
+      ];
+    }
+
     // Generate each file using AI
-    for (const file of architecture.files || []) {
+    for (const file of fileList) {
       this.logger.info(`  Generating ${file.path}...`);
 
       const prompt = `You are an expert developer writing production-quality code.
 
 File: ${file.path}
 Purpose: ${file.purpose}
-Framework: ${architecture.framework}
+Framework: ${architecture.framework || 'general'}
 
 Architecture Context:
 ${JSON.stringify(architecture, null, 2)}
@@ -174,15 +198,17 @@ Include:
 - Error handling
 - Type safety
 - Comments for complex logic
-- Best practices for ${architecture.framework}
+- Best practices
 
-Respond with ONLY the code, no explanations.`;
+Respond with ONLY the raw code. No markdown fences, no explanations.`;
 
       const code = await this.callLLM(prompt);
       files[file.path] = code;
     }
 
     this.logger.success('✅ Code generated');
+    this.logger.success(`📂 ${Object.keys(files).length} file(s) generated: ${Object.keys(files).join(', ')}`);
+
 
     return {
       files,

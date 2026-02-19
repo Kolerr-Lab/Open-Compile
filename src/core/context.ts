@@ -74,8 +74,11 @@ export class ContextManager {
       await mkdir(outputPath, { recursive: true });
     }
 
+    const fileEntries = Object.entries<string>(code.files || {});
+    console.log(`📝 Writing ${fileEntries.length} file(s) to ${outputPath}`);
+
     // Write each file
-    for (const [filePath, content] of Object.entries<string>(code.files)) {
+    for (const [filePath, content] of fileEntries) {
       const fullPath = join(outputPath, filePath);
       const dir = dirname(fullPath);
 
@@ -86,6 +89,7 @@ export class ContextManager {
 
       // Write file
       await writeFile(fullPath, content, 'utf-8');
+      console.log(`  ✅ Written: ${filePath}`);
     }
 
     // Write package.json or equivalent

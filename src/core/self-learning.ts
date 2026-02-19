@@ -23,6 +23,15 @@ export class SelfLearningEngine {
   }
 
   /**
+   * Ensure the vector index is created before any read/write
+   */
+  private async ensureIndexExists(): Promise<void> {
+    if (!(await this.vectorIndex.isIndexCreated())) {
+      await this.vectorIndex.createIndex();
+    }
+  }
+
+  /**
    * Learn from a generated project
    * Stores patterns, architectures, and solutions
    */
@@ -42,6 +51,7 @@ export class SelfLearningEngine {
     });
 
     // Store in vector database
+    await this.ensureIndexExists();
     await this.vectorIndex.insertItem({
       id: this.generateId(),
       metadata: {
@@ -71,6 +81,7 @@ export class SelfLearningEngine {
       language: metadata.language,
     });
 
+    await this.ensureIndexExists();
     await this.vectorIndex.insertItem({
       id: this.generateId(),
       metadata: {
@@ -97,6 +108,7 @@ export class SelfLearningEngine {
       extensionPatterns: this.extractPatterns(context.code),
     });
 
+    await this.ensureIndexExists();
     await this.vectorIndex.insertItem({
       id: this.generateId(),
       metadata: {
@@ -122,6 +134,7 @@ export class SelfLearningEngine {
       patterns: context.patterns,
     });
 
+    await this.ensureIndexExists();
     await this.vectorIndex.insertItem({
       id: this.generateId(),
       metadata: {
@@ -140,6 +153,7 @@ export class SelfLearningEngine {
    */
   async findSimilar(query: string, limit = 5): Promise<any[]> {
     const queryEmbedding = this.createEmbedding({ query });
+    await this.ensureIndexExists();
     const results = await this.vectorIndex.queryItems(queryEmbedding, limit);
     return results;
   }

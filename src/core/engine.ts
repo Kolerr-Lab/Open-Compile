@@ -10,6 +10,7 @@ import { AgentOrchestrator } from '../agents/orchestrator.js';
 import { ContextManager } from './context.js';
 import { SelfLearningEngine } from './self-learning.js';
 import { Logger } from '../utils/logger.js';
+import { resolve } from 'path';
 import type { EngineConfig, DetectionResult, ProjectMetadata } from '../types/index.js';
 
 export class OpenCompileEngine {
@@ -46,7 +47,7 @@ export class OpenCompileEngine {
    * Create a new project from natural language description
    * This is the REVOLUTIONARY feature - NO TEMPLATES!
    */
-  async create(description: string, preferredFramework?: string): Promise<void> {
+  async create(description: string, preferredFramework?: string): Promise<{ projectPath: string; code: any }> {
     this.logger.info(`🚀 Creating project: "${description}"`);
 
     // Step 1: Understand intent using multi-agent system
@@ -88,11 +89,13 @@ export class OpenCompileEngine {
       });
     }
     
-    // Step 7: Write files
-    this.logger.info('📁 Writing files...');
-    await this.contextManager.writeProject(this.config.outputPath, code);
+    // Step 7: Write files to absolute path
+    const absoluteOutputPath = resolve(this.config.outputPath);
+    this.logger.info(`📁 Writing files to: ${absoluteOutputPath}`);
+    await this.contextManager.writeProject(absoluteOutputPath, code);
     
     this.logger.success('✅ Project created successfully!');
+    return { projectPath: absoluteOutputPath, code };
   }
 
   /**

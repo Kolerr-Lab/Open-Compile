@@ -107,11 +107,13 @@ export class AGIEnhancedEngine {
     this.logger.info(`Creating: "${description}"`);
 
     // Step 1: Create base project
-    await this.baseEngine.create(description, options?.framework);
+    const { projectPath, code: baseCode } = await this.baseEngine.create(description, options?.framework);
     
-    // TODO: Get generated code from base engine (needs refactoring)
-    const generatedCode = '// Generated code placeholder';
-    const framework = options?.framework || 'express';
+    // Flatten all generated file contents into a single string for AGI analysis
+    const generatedCode = Object.entries(baseCode.files as Record<string, string>)
+      .map(([path, content]) => `// === ${path} ===\n${content}`)
+      .join('\n\n');
+    const detectedFramework = options?.framework || 'express';
 
     // Step 2: EVOLVE the code with genetic algorithms
     if (this.config.enableEvolution) {
@@ -130,11 +132,6 @@ export class AGIEnhancedEngine {
     if (this.config.enableSecurity) {
       this.logger.info('🛡️ Running AGI security scan...');
       securityReport = await this.security.scan(generatedCode);
-      
-      // TODO: Fix autoFix API when available
-      // if (securityReport.highSeverity > 0) {
-      //   this.logger.warn(`Found ${securityReport.highSeverity} high-severity vulnerabilities!`);
-      // }
     }
 
     // Step 4: PERFORMANCE optimization
@@ -142,14 +139,13 @@ export class AGIEnhancedEngine {
     if (this.config.enablePerformance) {
       this.logger.info('⚡ Optimizing performance with AI...');
       performanceReport = await this.performance.optimize(generatedCode);
-      // Use optimized code
     }
 
     // Step 5: GENERATE comprehensive tests
     let tests = '';
     if (this.config.enableTests) {
       this.logger.info('🧪 Generating automated test suite...');
-      const testSuite = await this.testGenerator.generateTests(generatedCode, framework);
+      const testSuite = await this.testGenerator.generateTests(generatedCode, detectedFramework);
       tests = JSON.stringify(testSuite);
     }
 
@@ -159,7 +155,7 @@ export class AGIEnhancedEngine {
       this.logger.info('📚 Generating AI-written documentation...');
       docs = await this.docGenerator.generate(generatedCode, {
         name: 'Generated Project',
-        framework,
+        framework: detectedFramework,
         domain: 'backend',
         features: ['API', 'Database', 'Authentication'],
       });
@@ -171,7 +167,7 @@ export class AGIEnhancedEngine {
       this.logger.info('🚀 Generating deployment configuration...');
       deployment = await this.deployment.generateDeployment(
         generatedCode,
-        framework,
+        detectedFramework,
         options?.platform || 'aws'
       );
     }
@@ -182,7 +178,7 @@ export class AGIEnhancedEngine {
       this.logger.info('⚙️ Generating CI/CD pipeline...');
       cicd = await this.cicdGenerator.generate(
         generatedCode,
-        framework,
+        detectedFramework,
         options?.cicd || 'github'
       );
     }
@@ -193,14 +189,14 @@ export class AGIEnhancedEngine {
       await this.refactor.refactor(generatedCode, {
         aggressiveness: 'moderate',
       });
-      // Use refactored code
     }
 
     this.logger.success('✅ PROJECT CREATED WITH FULL AGI POWER!');
+    this.logger.success(`📁 Output: ${projectPath}`);
     this.logger.success('🌟 This is LEGENDARY-level code generation!');
 
     return {
-      projectPath: './generated-project',
+      projectPath,
       code: generatedCode,
       tests,
       docs,
