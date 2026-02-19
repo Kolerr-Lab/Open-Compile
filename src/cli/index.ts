@@ -22,7 +22,7 @@ const version = packageJson.version;
 
 const program = new Command();
 
-// ASCII Art Banner
+// ASCII Art Banner with Cyber Horse Mascot
 const banner = `
 ${chalk.cyan('╔═══════════════════════════════════════════════════════════════════╗')}
 ${chalk.cyan('║')}  ${chalk.bold.hex('#00d9ff')('██████╗ ██████╗ ███████╗███╗   ██╗ ██████╗')}                  ${chalk.cyan('║')}
@@ -34,6 +34,7 @@ ${chalk.cyan('║')}  ${chalk.bold.hex('#00d9ff')(' ╚═════╝ ╚═
 ${chalk.cyan('║')}                                                                    ${chalk.cyan('║')}
 ${chalk.cyan('║')}  ${chalk.bold.yellow('🔥 Super Intelligent Backend Compiler')}                          ${chalk.cyan('║')}
 ${chalk.cyan('║')}  ${chalk.gray('Detect ANY Framework • ANY Domain • ZERO Templates')}          ${chalk.cyan('║')}
+${chalk.cyan('║')}  ${chalk.hex('#00d9ff')('🐴 Powered by The Cyber Horse - Speed & Intelligence')}          ${chalk.cyan('║')}
 ${chalk.cyan('╚═══════════════════════════════════════════════════════════════════╝')}
 `;
 
