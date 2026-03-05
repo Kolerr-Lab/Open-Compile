@@ -21,6 +21,7 @@ export class AgentOrchestrator {
   private anthropic?: Anthropic;
   private openai?: OpenAI;
   private google?: GoogleGenerativeAI;
+  private ollama?: OpenAI; // Local LLM via Ollama OpenAI-compatible API
   private logger: Logger;
   private model: string;
 
@@ -43,6 +44,14 @@ export class AgentOrchestrator {
 
     if (process.env.GOOGLE_API_KEY) {
       this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+    }
+
+    // Ollama local inference server
+    if (process.env.OLLAMA_BASE_URL) {
+      this.ollama = new OpenAI({
+        apiKey: 'ollama',
+        baseURL: `${process.env.OLLAMA_BASE_URL}/v1`,
+      });
     }
   }
 
@@ -332,6 +341,9 @@ Respond with complete ${context.to} architecture in JSON format.`;
       return this.callOpenAI(prompt);
     } else if (this.model.includes('gemini') && this.google) {
       return this.callGemini(prompt);
+    } else if (this.ollama) {
+      // Fallback to local Ollama model
+      return this.callOllama(prompt);
     } else {
       // Fallback to mock for development
       return this.mockLLM(prompt);
@@ -362,6 +374,15 @@ Respond with complete ${context.to} architecture in JSON format.`;
     const model = this.google!.getGenerativeModel({ model: this.model });
     const result = await model.generateContent(prompt);
     return result.response.text();
+  }
+
+  private async callOllama(prompt: string): Promise<string> {
+    const ollamaModel = process.env.OLLAMA_MODEL || 'llama3.2';
+    const completion = await this.ollama!.chat.completions.create({
+      model: ollamaModel,
+      messages: [{ role: 'user', content: prompt }],
+    });
+    return completion.choices[0]?.message?.content || '';
   }
 
   private async mockLLM(prompt: string): Promise<string> {

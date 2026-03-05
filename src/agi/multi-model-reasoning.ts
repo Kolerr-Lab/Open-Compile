@@ -30,6 +30,7 @@ export class AGIReasoningEngine {
   private anthropic?: Anthropic;
   private openai?: OpenAI;
   private google?: GoogleGenerativeAI;
+  private ollama?: OpenAI; // Local LLM via Ollama (OpenAI-compatible API)
   private logger: Logger;
 
   // Model configurations
@@ -37,6 +38,7 @@ export class AGIReasoningEngine {
     claude: 'claude-3-7-sonnet-20250219',
     gpt: 'gpt-4o',
     gemini: 'gemini-2.0-flash-exp',
+    ollama: process.env.OLLAMA_MODEL || 'llama3.2',
   };
 
   constructor(logger: Logger) {
@@ -50,6 +52,14 @@ export class AGIReasoningEngine {
     }
     if (process.env.GOOGLE_API_KEY) {
       this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+    }
+    // Ollama: local LLM inference server (OpenAI-compatible, no extra package needed)
+    if (process.env.OLLAMA_BASE_URL) {
+      this.ollama = new OpenAI({
+        apiKey: 'ollama', // required by SDK but unused by Ollama
+        baseURL: `${process.env.OLLAMA_BASE_URL}/v1`,
+      });
+      this.logger.info(`🦙 Ollama local LLM provider connected (${this.models.ollama})`);
     }
   }
 
@@ -77,6 +87,9 @@ export class AGIReasoningEngine {
     }
     if (this.google) {
       modelPromises.push(this.queryGeminiWithReasoning(prompt, options.enableChainOfThought));
+    }
+    if (this.ollama) {
+      modelPromises.push(this.queryOllamaWithReasoning(prompt, options.enableChainOfThought));
     }
 
     // Execute all queries concurrently
@@ -173,6 +186,33 @@ export class AGIReasoningEngine {
       confidence: this.calculateConfidence(content),
       reasoning,
       tokens: 0, // Gemini doesn't always provide token counts
+    };
+  }
+
+  /**
+   * Query local Ollama model using OpenAI-compatible API
+   */
+  private async queryOllamaWithReasoning(prompt: string, chainOfThought = true): Promise<ModelResponse> {
+    const enhancedPrompt = chainOfThought
+      ? `Think step by step and provide detailed reasoning.\n\n${prompt}\n\nProvide your reasoning process, then your final answer.`
+      : prompt;
+
+    const completion = await this.ollama!.chat.completions.create({
+      model: this.models.ollama,
+      messages: [{ role: 'user', content: enhancedPrompt }],
+      // Ollama does not support max_tokens via the compat API for all models;
+      // use num_predict in model options instead where needed.
+    });
+
+    const content = completion.choices[0]?.message?.content || '';
+    const reasoning = this.extractReasoning(content);
+
+    return {
+      model: `Ollama/${this.models.ollama}`,
+      response: content,
+      confidence: this.calculateConfidence(content),
+      reasoning,
+      tokens: completion.usage?.total_tokens || 0,
     };
   }
 
@@ -334,12 +374,30 @@ export class AGIReasoningEngine {
     const codeBlocks = consensus.finalResponse.match(/```[\s\S]*?```/g) || [];
     const code = codeBlocks.map(block => block.replace(/```\w*\n?|```/g, '')).join('\n\n');
 
+    // Determine which models actually participated
+    const allModels = [
+      this.anthropic ? 'Claude' : null,
+      this.openai ? 'GPT-4' : null,
+      this.google ? 'Gemini' : null,
+      this.ollama ? `Ollama/${this.models.ollama}` : null,
+    ].filter(Boolean) as string[];
+
     return {
       code: code || consensus.finalResponse,
       quality: consensus.confidence,
-      models: consensus.dissenting.length === 0 
-        ? ['Claude', 'GPT-4', 'Gemini']
-        : ['Claude', 'GPT-4', 'Gemini'].filter(m => !consensus.dissenting.some(d => d.startsWith(m))),
+      models: allModels.filter(m => !consensus.dissenting.some(d => d.startsWith(m))),
     };
+  }
+
+  /**
+   * Returns metadata about all configured providers
+   */
+  getProviders(): Array<{ name: string; model: string; type: 'cloud' | 'local'; available: boolean }> {
+    return [
+      { name: 'Anthropic Claude', model: this.models.claude, type: 'cloud', available: !!this.anthropic },
+      { name: 'OpenAI GPT-4', model: this.models.gpt, type: 'cloud', available: !!this.openai },
+      { name: 'Google Gemini', model: this.models.gemini, type: 'cloud', available: !!this.google },
+      { name: 'Ollama (Local)', model: this.models.ollama, type: 'local', available: !!this.ollama },
+    ];
   }
 }
