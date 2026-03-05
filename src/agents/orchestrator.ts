@@ -377,7 +377,7 @@ Respond with complete ${context.to} architecture in JSON format.`;
   }
 
   private async callOllama(prompt: string): Promise<string> {
-    const ollamaModel = process.env.OLLAMA_MODEL || 'llama3.2';
+    const ollamaModel = process.env.OLLAMA_MODEL || 'qwen2.5-coder:7b';
     const completion = await this.ollama!.chat.completions.create({
       model: ollamaModel,
       messages: [{ role: 'user', content: prompt }],

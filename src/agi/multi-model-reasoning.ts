@@ -38,7 +38,7 @@ export class AGIReasoningEngine {
     claude: 'claude-3-7-sonnet-20250219',
     gpt: 'gpt-4o',
     gemini: 'gemini-2.0-flash-exp',
-    ollama: process.env.OLLAMA_MODEL || 'llama3.2',
+    ollama: process.env.OLLAMA_MODEL || 'qwen2.5-coder:7b',
   };
 
   constructor(logger: Logger) {
@@ -94,7 +94,7 @@ export class AGIReasoningEngine {
 
     // Execute all queries concurrently
     const results = await Promise.allSettled(modelPromises);
-    
+
     for (const result of results) {
       if (result.status === 'fulfilled') {
         responses.push(result.value);
@@ -271,7 +271,7 @@ export class AGIReasoningEngine {
    */
   private extractReasoning(text: string): string[] {
     const reasoning: string[] = [];
-    
+
     // Look for numbered steps, bullet points, or "because" statements
     const stepPatterns = [
       /\d+\.\s+(.+?)(?=\n\d+\.|\n\n|$)/gs,
