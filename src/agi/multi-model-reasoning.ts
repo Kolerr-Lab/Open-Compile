@@ -44,14 +44,14 @@ export class AGIReasoningEngine {
   constructor(logger: Logger) {
     this.logger = logger;
 
-    if (process.env.ANTHROPIC_API_KEY) {
-      this.anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    if (this.isValidKey(process.env.ANTHROPIC_API_KEY)) {
+      this.anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
     }
-    if (process.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    if (this.isValidKey(process.env.OPENAI_API_KEY)) {
+      this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
     }
-    if (process.env.GOOGLE_API_KEY) {
-      this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+    if (this.isValidKey(process.env.GOOGLE_API_KEY)) {
+      this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
     }
     // Ollama: local LLM inference server (OpenAI-compatible, no extra package needed)
     if (process.env.OLLAMA_BASE_URL) {
@@ -61,6 +61,11 @@ export class AGIReasoningEngine {
       });
       this.logger.info(`🦙 Ollama local LLM provider connected (${this.models.ollama})`);
     }
+  }
+
+  /** Returns true only for real API keys, rejects placeholders like 'your-...' */
+  private isValidKey(key: string | undefined): boolean {
+    return !!key && key.length > 8 && !key.startsWith('your-') && !key.includes('your-');
   }
 
   /**

@@ -29,21 +29,15 @@ export class AgentOrchestrator {
     this.logger = config.logger;
     this.model = config.model;
 
-    // Initialize AI providers
-    if (process.env.ANTHROPIC_API_KEY) {
-      this.anthropic = new Anthropic({
-        apiKey: process.env.ANTHROPIC_API_KEY,
-      });
+    // Initialize AI providers — only with real keys (not placeholders)
+    if (this.isValidKey(process.env.ANTHROPIC_API_KEY)) {
+      this.anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
     }
-
-    if (process.env.OPENAI_API_KEY) {
-      this.openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
+    if (this.isValidKey(process.env.OPENAI_API_KEY)) {
+      this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
     }
-
-    if (process.env.GOOGLE_API_KEY) {
-      this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+    if (this.isValidKey(process.env.GOOGLE_API_KEY)) {
+      this.google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
     }
 
     // Ollama local inference server
@@ -53,6 +47,11 @@ export class AgentOrchestrator {
         baseURL: `${process.env.OLLAMA_BASE_URL}/v1`,
       });
     }
+  }
+
+  /** Rejects placeholder values like 'your-openai-api-key-here' */
+  private isValidKey(key: string | undefined): boolean {
+    return !!key && key.length > 8 && !key.includes('your-');
   }
 
   /**
