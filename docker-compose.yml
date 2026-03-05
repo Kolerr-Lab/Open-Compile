@@ -9,46 +9,40 @@ services:
     container_name: opencompile-agi
     environment:
       - NODE_ENV=production
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - PORT=3001
+      # Cloud Models (Set these in your local .env file)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      # Local Model Config
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=qwen2.5-coder:7b
+      - OPENCOMPILE_MODEL=${OPENCOMPILE_MODEL:-qwen2.5-coder:7b}
     volumes:
-      # Mount output directory
       - ./generated-projects:/app/generated-projects
-      # Mount vector DB storage
-      - opencompile-vectordb:/app/knowledge-base
     ports:
-      - "3000:3000"
+      - "3001:3001"
     restart: unless-stopped
     networks:
-      - opencompile-network
-    healthcheck:
-      test: ["CMD", "node", "-e", "console.log('healthy')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      - opencompile-net
+    depends_on:
+      - ollama
 
-  # Web UI Service (optional, for future development)
-  # webui:
-  #   build:
-  #     context: ./webui
-  #     dockerfile: Dockerfile
-  #   image: opencompile-webui:latest
-  #   container_name: opencompile-webui
-  #   ports:
-  #     - "8080:80"
-  #   environment:
-  #     - API_URL=http://opencompile:3000
-  #   depends_on:
-  #     - opencompile
-  #   networks:
-  #     - opencompile-network
+  ollama:
+    image: ollama/ollama:latest
+    container_name: opencompile-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - opencompile-net
 
 volumes:
-  opencompile-vectordb:
+  ollama_data:
     driver: local
 
 networks:
-  opencompile-network:
+  opencompile-net:
     driver: bridge
